@@ -9,20 +9,27 @@ const Icon = styled.Image`
   width: 30px;
   height: 30px;
   margin: 10px;
-  //icon 색상과 글자색 동일하게
-  tint-color: ${({theme}) => theme.text};
+  tint-color: ${({theme, completed}) => (completed? theme.done: theme.text)};
 `;
 
 const IconButton = props => {
+  //id를 받는 _onPress로 새로 정의
+  const _onPress = () => {
+    props.onPress(props.item.id);
+  }
   return(
     //클릭되었을 때 수행할 동작
-    <TouchableOpacity onPress={props.onPress}>
+    <TouchableOpacity onPress={_onPress}>
       <View>
         {/* icon으로 이미지 불러오기 */}
-        <Icon source={props.icon}></Icon>
+        <Icon source={props.icon} completed={props.item.completed} />
       </View>
     </TouchableOpacity>
   );
+}
+
+IconButton.defaultProps={
+  item: {completed: false},
 }
 
 IconButton.propTypes={
@@ -30,6 +37,7 @@ IconButton.propTypes={
   //객체에서 값만 뽑은 배열로 주기
   icon: PropTypes.oneOf(Object.values(icons)).isRequired,
   onPress: PropTypes.func,
+  item: PropTypes.object,
 }
 
 export default IconButton;
